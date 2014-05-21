@@ -8,8 +8,8 @@ def test():
   H[1] = [1, 0, 1]
   H[2] = [1, 1, 0]
   H[3] = [1, 0, 0]
-  G = get_identity_matrix(3).extend(H.T())
-  H.extend(get_identity_matrix(4))
+  G = get_identity_matrix(3).extend_right(H.T())
+  H.extend_right(get_identity_matrix(4))
 
   v = Matrix(1, 3)
   v.data[0] = [1,1,0]
@@ -46,33 +46,35 @@ def get_mul_correction(d):
   return -1 
 
 def main():
-  d = get_distance(7, 3)
+  n = 10 
+  k = 4 
+  d = get_distance(n, k)
   qo = get_mul_detection(d)
   qu = get_mul_correction(d)
   print "d = {0} \nqo = {1} \nqu = {2} \n".format(d,qo,qu)
 
-  test()
-  G = Matrix(3, 7)
-  G[0] = [1, 0, 0, 1, 0, 1, 1]
-  G[1] = [0, 1, 0, 1, 1, 0, 1]
-  G[2] = [0, 0, 1, 0, 1, 1, 1]
+  #test()
+  G = Matrix(k, n-k)
+  H = Matrix(n-k, k)
+  G[0] = [1, 1, 0, 1, 1, 0]
+  G[0] = [1, 0, 1, 1, 0, 1]
+  G[2] = [0, 1, 1, 1, 1, 1]
+  G[3] = [0, 0, 0, 0, 1, 1]
+  H = G.T()
+  G = get_identity_matrix(k).extend_right(G)
 
 
-  H = Matrix(4, 3)
-  H[0] = [1, 1, 0]
-  H[1] = [0, 1, 1]
-  H[2] = [1, 0, 1]
-  H[3] = [1, 1, 1]
-  H.extend(get_identity_matrix(4))
+  H.extend_right(get_identity_matrix(n-k))
+
   print "Check G*H^t\n" ,G*H.T()
 
-  u = Matrix(1, 7)
-  v = Matrix(1, 3)
-  v.data[0] = [1, 1, 0]
+  u = Matrix(1, n)
+  v = Matrix(1, k)
+  v.data[0] = [0] * k
+  v.data[0][0] = 1
   u = v * G
-  u[0][1] = 0 #mistake in second
+  u[0][0] = 0 #mistake in second
 
-  print "H^t\n", H.T()
   res = u*H.T()
   print "Corrupt: ",H.T().data.index(res[0])+1
 

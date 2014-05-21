@@ -26,13 +26,22 @@ class Matrix:
 	  m[new_row][new_col] ^= self[new_row][iter] * other[iter][new_col]
     return m
   
-  def extend(self, other):
+  def extend_right(self, other):
     if self.n == other.n:
       for row in range(other.n):
 	self.data[row].extend([0] * other.m)
 	for col in range(other.m):
 	  self.data[row][self.m + col] = other[row][col]
-    self.m += other.m
+      self.m += other.m
+    return self
+
+  def extend_bottom(self, other):
+    if self.m == other.m:
+      for row in range(other.n):
+	self.data[row + self.n].extend([0] * other.m)
+	for col in range(other.m):
+	  self.data[row+self.n][col] = other[row][col]
+      self.n += other.n
     return self
 
   def T(self):
