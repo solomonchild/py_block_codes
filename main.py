@@ -51,13 +51,13 @@ def main():
   d = get_distance(n, k)
   qo = get_mul_detection(d)
   qu = get_mul_correction(d)
-  print "d = {0} \nqo = {1} \nqu = {2} \n".format(d,qo,qu)
+  print "n = {0}, k ={1}\nd = {2} \nqo = {3} \nqu = {4} \n".format(n, k, d,qo,qu)
 
   #test()
   G = Matrix(k, n-k)
   H = Matrix(n-k, k)
   G[0] = [1, 1, 0, 1, 1, 0]
-  G[0] = [1, 0, 1, 1, 0, 1]
+  G[1] = [1, 0, 1, 1, 0, 1]
   G[2] = [0, 1, 1, 1, 1, 1]
   G[3] = [0, 0, 0, 0, 1, 1]
   H = G.T()
@@ -66,16 +66,22 @@ def main():
 
   H.extend_right(get_identity_matrix(n-k))
 
+  print "G\n", G
+  print "H\n", H
   print "Check G*H^t\n" ,G*H.T()
 
   u = Matrix(1, n)
   v = Matrix(1, k)
   v.data[0] = [0] * k
   v.data[0][0] = 1
+  v.data[0][1] = 1
   u = v * G
-  u[0][0] = 0 #mistake in second
+  print "u", u
+  print "H^T", H.T()
+  u[0][1] = 0 #mistake in second
 
   res = u*H.T()
+  print "u*H^T:", res
   print "Corrupt: ",H.T().data.index(res[0])+1
 
 if __name__ == "__main__":
